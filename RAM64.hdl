@@ -1,0 +1,55 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/RAM64.hdl
+
+/**
+ * Memory of 64 registers, each 16-bit wide.  
+ * The chip facilitates read and write operations, as follows:
+ *     Read:  out(t) = RAM64[address(t)](t)
+ *     Write: If load(t-1) then RAM64[address(t-1)](t) = in(t-1)
+ * In words: the chip always outputs the value stored at the memory 
+ * location specified by address. If load == 1, the in value is loaded 
+ * into the memory location specified by address.  This value becomes 
+ * available through the out output starting from the next time step.
+ */
+
+CHIP RAM64 {
+    IN in[16], load, address[6];
+    OUT out[16];
+	
+
+	
+	
+
+    PARTS:
+		// Put your code here.
+		DMux8Way(in = load, sel = address[3..5],
+		a = bank0,
+		b = bank1,
+		c = bank2,
+		d = bank3,
+		e = bank4,
+		f = bank5,
+		g = bank6,
+		h = bank7);
+		
+		RAM8(in = in, load = bank0, address = address[0..2], out = bank0out);	// Bank 0
+		RAM8(in = in, load = bank1, address = address[0..2], out = bank1out);	// Bank 1
+		RAM8(in = in, load = bank2, address = address[0..2], out = bank2out);	// Bank 2
+		RAM8(in = in, load = bank3, address = address[0..2], out = bank3out);	// Bank 3
+		RAM8(in = in, load = bank4, address = address[0..2], out = bank4out);	// Bank 4
+		RAM8(in = in, load = bank5, address = address[0..2], out = bank5out);	// Bank 5
+		RAM8(in = in, load = bank6, address = address[0..2], out = bank6out);	// Bank 6
+		RAM8(in = in, load = bank7, address = address[0..2], out = bank7out);	// Bank 7
+		
+		Mux8Way16(
+		a = bank0out,
+		b = bank1out,
+		c = bank2out,
+		d = bank3out,
+		e = bank4out,
+		f = bank5out,
+		g = bank6out,
+		h = bank7out, sel = address[3..5], out = out);
+}
